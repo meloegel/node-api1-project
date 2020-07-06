@@ -1,5 +1,6 @@
 const express = require('express');
 const shortid = require('shortid');
+
 const server = express();
 
 server.use(express.json());
@@ -73,9 +74,13 @@ server.put('/api/users/:id', (req, res) => {
         res.status(400).json({ errorMessage: "Please provide name and bio for the user." })
     } else if (found) {
         found = Object.assign(found, changes)
-        res.status(200).json(found)
+        if (found) {
+            res.status(200).json(found)
+        } else {
+            res.status(500).json({ errorMessage: "The user information could not be modified." })
+        }
     } else {
-        res.status(500).json({ errorMessage: "The user information could not be modified." })
+        res.status(404).json({ message: "The user with the specified ID does not exist." })
     }
 })
 
